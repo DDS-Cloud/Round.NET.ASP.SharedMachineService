@@ -1,0 +1,29 @@
+﻿@page
+@model Round.NET.WebServer.Pages.DDS.Help.InquireUserRegisterModel
+@{
+    ViewData["Title"] = "查询用户注册审核进度";
+}
+<div class="text-center">
+    <h1>查询用户审核进度</h1>
+
+    <h5>QQ号</h5>
+    <input name="qq" id="qqInput" />
+    <button type="button" id="registerButton">查询</button>
+</div>
+<script>
+    document.getElementById('registerButton').addEventListener('click', function () {
+        var qq = document.getElementById('qqInput').value;
+
+        // 检查输入是否为空
+        if (!qq) {
+            alert("所有字段都是必填的！");
+            return;
+        }
+
+        // 构建查询参数
+        var queryParams = 'qq=' + encodeURIComponent(qq);
+
+        // 跳转到注册页面并带上查询参数
+        window.location.href = '/DDS/Help/ShowUserInq?' + queryParams;
+    });
+</script>

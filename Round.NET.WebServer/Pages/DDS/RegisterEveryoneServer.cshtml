@@ -1,0 +1,80 @@
+﻿@page
+@model RegisterEveryoneServerModel
+@{
+    ViewData["Title"] = "注册共享云 - 等灯云";
+}
+
+<style>
+    #imagePreview {
+        max-width: 300px;
+        max-height: 300px;
+        border: 1px solid #000;
+        margin-top: 20px;
+        display: none; /* Initially hide the image preview */
+    }
+</style>
+<div class="text-center">
+    <h1>等灯云 共享服务器账户注册</h1>
+    <label>官方聊群：<a href="https://qm.qq.com/q/h4WLMpEc7K">221751995</a></label>
+    <h5>QQ号</h5>
+    <input name="qq" id="qqInput" />
+    <br />
+    <h5>远程用户名</h5>
+    <input name="username" id="usernameInput" />
+    <br />
+    <h5>远程密码</h5>
+    <input name="password" id="passwordInput" />
+    <br />
+    <br />
+    <button type="button" id="registerButton">注册</button>
+    <button id="selectImageButton">上传三连截图</button>
+
+    <a href="/DDS/Help/UserHelp">等灯云 帮助页面</a>
+
+    <input type="file" id="imageInput" style="display: none;" accept="image/*">
+    <img id="imagePreview" src="" alt="Image preview will appear here">
+</div>
+<script>
+    var ook = 'false';
+    document.getElementById('registerButton').addEventListener('click', function () {
+        var qq = document.getElementById('qqInput').value;
+        var username = document.getElementById('usernameInput').value;
+        var password = document.getElementById('passwordInput').value;
+
+        // 检查输入是否为空
+        if (!qq || !username || !password) {
+            alert("所有字段都是必填的！");
+            return;
+        }
+
+        if (ook == 'true') {
+            // 构建查询参数
+            var queryParams = 'qq=' + encodeURIComponent(qq) + '&username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+
+            // 跳转到注册页面并带上查询参数
+            window.location.href = '/DDS/Registed?' + queryParams;
+        } else {
+            alert("未上传三连截图！");
+        }
+    });
+    // JavaScript to handle image selection and preview
+    document.getElementById('selectImageButton').addEventListener('click', function () {
+        document.getElementById('imageInput').click(); // Trigger the file input click
+    });
+
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            // Set the src of the image to the result of the FileReader
+            document.getElementById('imagePreview').src = e.target.result;
+            // Show the image preview
+            document.getElementById('imagePreview').style.display = 'block';
+            // You can also store the image data in a variable if needed
+            var imageDataURL = e.target.result;
+            console.log("Image data URL:", imageDataURL);
+            ook = 'true'
+            // You can store this imageDataURL in a variable or use it as needed
+        };
+        reader.readAsDataURL(event.target.files[0]); // Read the file as a data URL
+    });
+</script>

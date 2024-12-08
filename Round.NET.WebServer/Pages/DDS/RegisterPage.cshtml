@@ -1,0 +1,18 @@
+﻿@page
+@model Round.NET.WebServer.Pages.DDS.RegisterPageModel
+@{
+    ViewData["Title"] = "注册完成";
+}
+
+<div class="text-center">
+    @if (Model.zts)
+    {
+        <h1>发生了什么?</h1>
+        <h4>你的QQ已被注册 或 此用户名已被注册</h4>
+    }
+    else
+    {
+        <h1>感谢您的注册!</h1>
+        <h4>请等待1~2个工作日审核!</h4>
+    }
+</div>

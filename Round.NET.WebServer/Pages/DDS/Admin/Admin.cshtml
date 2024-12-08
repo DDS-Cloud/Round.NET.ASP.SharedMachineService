@@ -1,0 +1,151 @@
+﻿@page
+@model AdminModel
+@{
+    ViewData["Title"] = "管理员页面";
+}
+<style>
+    .lists {
+        padding: 20px;
+        border-bottom: 1px solid #ccc;
+    }
+    /* 选项卡容器 */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* 选项卡按钮 */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* 选项卡按钮 hover 效果 */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* 激活的选项卡按钮 */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* 选项卡内容 */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+</style>
+<div class="text-center">
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Tab1')">用户审核</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab2')">删除用户</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab3')">数据统计</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab4')">控制台</button>
+        <br />
+    </div>
+
+    <div id="Tab1" class="tabcontent">
+        <ol id="List">
+            @foreach (var item in Model.Items)
+            {
+                <li id="@item.qq" style="padding: 20px;border-bottom: 1px solid #ccc;">
+                    <label>QQ:@item.qq</label>
+                    <label>远程连接账户:@item.name</label>
+                    <label>远程连接密码:@item.pwd</label>
+                    <button data-id="@item.qq" class="yes">同意注册</button>
+                    <button data-id="@item.qq" class="close">不同意注册</button>
+                </li>
+            }
+            @if(@Model.Items.Count==0){
+                <br />
+                <h3>当前无申请审核</h3>
+            }
+        </ol>
+    </div>
+
+    <div id="Tab2" class="tabcontent">
+        <label>需要删除账户的QQ号或远程用户名:</label>
+        <input type="text" id="wordkey1" />
+        <button onclick="showInputValue()">删除</button>
+    </div>
+
+    <div id="Tab3" class="tabcontent">
+        <p>工单处理用户数量:@Model.UsersNum</p>
+        <p> 系统进程数:@Model.TaskNum </p>
+    </div>
+
+    <div id="Tab4" class="tabcontent">
+        <textarea style="width:100%;min-height:400px" readonly>
+@Model.CommandOut
+        </textarea>
+        <br />
+        <div style="width:100%;display:flex;align-items:center">
+            <input style="flex:1;margin-right: 5px;" placeholder="在此处输入Windows命令..." id="commandinput"/>
+            <button style="width:auto" onclick="runcommand()">运行</button>
+        </div>
+    </div>
+</div>
+<script>
+    var nums = 0;
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        var activeTabIndex = Array.prototype.indexOf.call(tablinks, evt.currentTarget);
+        nums = activeTabIndex;
+    }
+
+    var defaultTab = @Model.pagenum1;
+    if (defaultTab >= 0) {
+        document.getElementsByClassName("tablinks")[defaultTab].click();
+        nums = defaultTab;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('List').addEventListener('click', function (event) {
+            if (event.target.classList.contains('close')) {
+                var targetId = event.target.getAttribute('data-id');
+                var listItem = document.getElementById(targetId);
+                listItem.parentNode.removeChild(listItem);
+                window.location.href = "/DDS/Admin/Admin?pagenum=" + nums + "&qq=" + targetId + "&type=yes";
+            }
+            if (event.target.classList.contains('yes')) {
+                var targetId = event.target.getAttribute('data-id');
+                var listItem = document.getElementById(targetId);
+                listItem.parentNode.removeChild(listItem);
+
+                window.location.href = "/DDS/Admin/Admin?pagenum=" + nums + "&qq=" + targetId + "&type=yes";
+            }
+        });
+    });
+
+    function showInputValue() {
+        var inputValue = document.getElementById('wordkey1').value;
+        window.location.href = "/DDS/Admin/Admin?pagenum=" + nums + "&keys=" + inputValue;
+    }
+
+    function runcommand() {
+        var inputValue = document.getElementById('commandinput').value;
+        window.location.href = "/DDS/Admin/Admin?pagenum=" + nums + "&command=" + inputValue;
+    }
+</script>
